@@ -1,6 +1,9 @@
-import express from "express";
 import cors from "cors";
-import "dotenv/config";
+import express, { Application,  Request, Response, NextFunction } from 'express';
+import dotenv from 'dotenv';
+import testRouter from './routes/test.route';
+
+dotenv.config();
 
 const app = express();
 
@@ -21,6 +24,13 @@ app.use(express.json());
 
 // TODO
 //app.use("/api/users", userRouter);
+app.use('/api/test', testRouter);
+
+// middleware d'erreur par lequel on passera quand on lèvera une erreur générique :
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error(err);
+    res.status(500).json({message: "Erreur serveur, sorry"});
+})
 
 
 // TODO
