@@ -1,13 +1,11 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import database from "../database/db"
-import type { Advert } from "../types/advert";
+import type { Advert, AdvertPur } from "../types/advert";
 
 // copied on user, which was TEMP
-export async function findAllAdverts(form_id: number): Promise<Advert[]> {
+export async function findAllAdverts(): Promise<Advert[]> {
     const [rows] = await database.query<Advert[] & RowDataPacket[]>(
-        `SELECT * FROM advert`,
-        [form_id]
-    );
+        `SELECT * FROM advert`);
     return rows;
 }
 
@@ -27,7 +25,7 @@ export async function insertAdvert({
     last_date,
     user_id,
     category_id
-}:Advert): Promise<Advert> {
+}:AdvertPur): Promise<Advert> {
     const fields = [
         "title",
         "description",
@@ -75,7 +73,7 @@ export async function updateAdvert({
     last_date,
     user_id,
     category_id
-}:Advert): Promise<Advert> {
+}:AdvertPur): Promise<Advert> {
     const adverts = [
         "title",
         "description",
