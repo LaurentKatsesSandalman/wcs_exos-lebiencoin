@@ -11,13 +11,10 @@ user_id: number;
 category_id: number;
 }
 
-export interface AdvertPur {
-advert_id?: number;
+export interface AdvertPayload {
 title: string;
 description: string;
 price: number;
-creation_date: string;
-last_date: string;
 user_id: number;
 category_id: number;
 }

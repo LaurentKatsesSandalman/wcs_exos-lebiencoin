@@ -11,11 +11,11 @@ import {
 const router = express.Router();
 
 
-router.get("/:form_id/", getAllAdverts);
-router.get("/:form_id/:id", getThisAdvert);
-router.post("/:form_id/", createAdvert);
-router.put("/:form_id/:id", updateThisAdvert);
-router.delete("/:form_id/:id", deleteAdvert);
+router.get("/", getAllAdverts);
+router.get("/:id", getThisAdvert);
+router.post("/", authMiddleware, createAdvert);
+router.patch("/:id", authMiddleware, updateThisAdvert);
+router.delete("/:id", authMiddleware, deleteAdvert);
 
 
 export default router;

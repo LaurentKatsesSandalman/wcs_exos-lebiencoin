@@ -38,14 +38,12 @@ export const getThisAdvert: RequestHandler = async (req, res, next) => {
 // The A of BREAD - Add (Create) operation
 export const createAdvert: RequestHandler = async (req, res, next) => {
     try {
-        const { title, description, price, creation_date, last_date, user_id, category_id } = req.body
+        const { title, description, price, user_id, category_id } = req.body
 
         if (
             typeof title !== 'string' ||
             typeof description !== 'string' ||
             typeof price !== 'number' ||
-            typeof creation_date !== 'string' ||
-            typeof last_date !== 'string' ||
             typeof user_id !== 'number' ||
             typeof category_id !== 'number'
         ) {
@@ -54,7 +52,7 @@ export const createAdvert: RequestHandler = async (req, res, next) => {
         }
         
         // Create the advert
-        const newAdvert = await insertAdvert({ title, description, price, creation_date,last_date, user_id, category_id })
+        const newAdvert = await insertAdvert({ title, description, price, user_id, category_id })
         res.status(201).json(newAdvert)
     } catch (err) {
         // Pass any errors to the error-handling middleware
@@ -65,8 +63,18 @@ export const createAdvert: RequestHandler = async (req, res, next) => {
 //The U of BREAUD (lol) - Update operation
 export const updateThisAdvert: RequestHandler = async (req, res, next) => {
     try {
-        const { advert_id, title, description, price, creation_date,last_date, user_id, category_id } = req.body
-        const updatedAdvert = await updateAdvert({ advert_id, title, description, price, creation_date,last_date, user_id, category_id })
+                const advert_id = Number.parseInt(req.params.id)
+        if (isNaN(advert_id)) {
+            res.status(400).json({ error: 'L\'id de l\'annonce est censée être numérique' });
+            return;
+        }
+        const fields: Partial<Advert>  = {}
+        if (typeof (req.body["title"])==="string"){fields["title"]=req.body["title"]}
+        if (typeof (req.body["description"])==="string"){fields["description"]=req.body["description"]}
+        if (typeof (req.body["price"])==="number"){fields["price"]=req.body["price"]}
+        if (typeof (req.body["category_id"])==="number"){fields["category_id"]=req.body["category_id"]}
+
+        const updatedAdvert = await updateAdvert({ advert_id, ...fields })
         res.status(200).json(updatedAdvert)
     } catch (err) {
         next(err);

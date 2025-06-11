@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import database from "../database/db"
-import type { Advert, AdvertPur } from "../types/advert";
+import type { Advert, AdvertPayload } from "../types/advert";
 
 // copied on user, which was TEMP
 export async function findAllAdverts(): Promise<Advert[]> {
@@ -21,17 +21,13 @@ export async function insertAdvert({
     title,
     description,
     price,
-    creation_date,
-    last_date,
     user_id,
     category_id
-}:AdvertPur): Promise<Advert> {
+}:AdvertPayload): Promise<Advert> {
     const fields = [
         "title",
         "description",
         "price",
-        "creation_date",
-        "last_date",
         "user_id",
         "category_id"
     ];
@@ -39,8 +35,6 @@ export async function insertAdvert({
         title,
         description,
         price,
-        creation_date,
-        last_date,
         user_id,
         category_id
     ];
@@ -64,37 +58,33 @@ export async function insertAdvert({
     return rows[0];
 }
 
-export async function updateAdvert({
-    advert_id,
-    title,
-    description,
-    price,
-    creation_date,
-    last_date,
-    user_id,
-    category_id
-}:AdvertPur): Promise<Advert> {
-    const adverts = [
-        "title",
-        "description",
-        "price",
-        "creation_date",
-        "last_date",
-        "user_id",
-        "category_id"
+export async function updateAdvert(advert: Partial<Advert> & { advert_id: number }): Promise<Advert>  {
+    const fields = [
     ];
     const values = [
-        title,
-        description,
-        price,
-        creation_date,
-        last_date,
-        user_id,
-        category_id,
-        advert_id,
     ];
+    if (advert.title!==null){
+fields.push("title")
+values.push(advert.title)
+    }
+    if (advert.description!==null){
+fields.push("description")
+values.push(advert.description)
+    }
+    if (advert.price!==null){
+fields.push("price")
+values.push(advert.price)
+    }
+    if (advert.category_id!==null){
+fields.push("category_id")
+values.push(advert.category_id)
+    }
 
-    const contentSet = adverts.map((advert) => `${advert}=?`).join(",");
+    if (typeof advert.advert_id !== "number"){
+        throw new Error("Advert_id should be num");
+    }
+values.push(advert.advert_id)
+    const contentSet = fields.map((field) => `${field}=?`).join(",");
     const sqlQuery = `
         UPDATE advert 
         SET ${contentSet}
@@ -105,7 +95,7 @@ export async function updateAdvert({
     await database.query<ResultSetHeader>(sqlQuery, values);
     const [rows] = await database.query<Advert[] & RowDataPacket[]>(
         `SELECT * FROM advert WHERE advert_id = ? `,
-        [advert_id]
+        [advert.advert_id]
     );
 
     if (rows.length === 0) {
