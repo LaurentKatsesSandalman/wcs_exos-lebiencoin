@@ -2,6 +2,8 @@ import cors from "cors";
 import express, { Application,  Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import advertRouter from './routes/advert.routes';
+import authRouter from './routes/auth.routes';
+import userRouter from './routes/user.routes';
 
 dotenv.config();
 
@@ -23,7 +25,8 @@ app.use(express.json());
 
 
 // TODO
-//app.use("/api/users", userRouter);
+app.use("/api/users", userRouter);
+app.use("/api/users", authRouter);
 app.use('/api/advert', advertRouter);
 
 // middleware d'erreur par lequel on passera quand on lèvera une erreur générique :

@@ -1,3 +1,4 @@
+-- Active: 1747815168837@@127.0.0.1@3306@lebiencoin
 DROP DATABASE IF EXISTS lebiencoin;
 
 CREATE DATABASE lebiencoin;
