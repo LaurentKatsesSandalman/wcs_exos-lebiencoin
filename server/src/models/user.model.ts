@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import database from "../database/db"
-import type { User, UserPayload } from "../types/user";
+import type { User, UserPayload, UserPassword } from "../types/user";
 
 export async function createUser(user: UserPayload): Promise<User>{
 const fields = ["user_name",
@@ -38,9 +38,9 @@ if(user.phone){
 }
 
 
-export async function findUserByEmail(email: string): Promise<User | null>{
-    const [rows] = await database.query<User[] & RowDataPacket[]>(
-        `SELECT * FROM user WHERE email=?`,
+export async function findUserByEmail(email: string): Promise<UserPassword | null>{
+    const [rows] = await database.query<UserPassword[] & RowDataPacket[]>(
+        `SELECT email, password, user_id FROM user WHERE email=?`,
         [email]
     );
     return rows[0];

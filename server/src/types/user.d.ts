@@ -13,3 +13,9 @@ export type User = {
   user_town: string;
   phone?: string;
 };
+
+export type UserPassword = {
+  user_id: number;
+  email: string;
+  password: string;
+}

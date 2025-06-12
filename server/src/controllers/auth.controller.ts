@@ -30,10 +30,23 @@ export const userRegister: RequestHandler = async (req, res, next) => {
         if (typeof (req.body["phone"]) === "string") { fields["phone"] = req.body["phone"] }
 
         // creation du user
-                const newAdvert = await createUser({ ...fields })
-                res.status(201).json({ message: "Utilisateur créé" })//temp before token
+        const newUser = await createUser({ ...fields })
+        res.status(201).json({ message: "Utilisateur créé" })//temp before token
     } catch (err) {
         next(err);
     }
+}
 
+export const userLogin: RequestHandler = async (req, res, next) => {
+    try {
+        const { email, password } = req.body
+        const userToCheck = await findUserByEmail(email)
+        if (!userToCheck) {
+            res.status(400).json({ error: "Utilisateur introuvable" })
+        }
+        else{
+        const loginSuccess = await bcrypt.compare(password, userToCheck.password)}
+    } catch (err) {
+        next(err);
+    }
 }
