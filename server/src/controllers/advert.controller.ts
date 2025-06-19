@@ -1,6 +1,7 @@
 import type { RequestHandler } from "express";
 import { findAllAdverts, findAdvertById, insertAdvert, updateAdvert, deleteAdvertById} from "../models/advert.model";
 import type { Advert } from "../types/advert";
+import { RequestWithUser } from "../types/user";
 
 // The B of BREAD - Browse (Read All) operation
 

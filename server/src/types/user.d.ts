@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export type UserPayload = {
   email: string;
   password: string;
@@ -18,4 +20,8 @@ export type UserPassword = {
   user_id: number;
   email: string;
   password: string;
+};
+
+export interface RequestWithUser extends Request {
+  user: User
 }

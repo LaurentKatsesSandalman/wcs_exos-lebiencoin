@@ -7,6 +7,7 @@ import {
     updateThisAdvert,
     deleteAdvert,
 } from "./../controllers/advert.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
