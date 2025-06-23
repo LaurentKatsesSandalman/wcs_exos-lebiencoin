@@ -11,7 +11,8 @@ CREATE TABLE user (
     email VARCHAR(255) NOT NULL UNIQUE KEY,
     password CHAR(64) NOT NULL,
     user_town VARCHAR(100) NOT NULL,
-    phone VARCHAR(20)
+    phone VARCHAR(20),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE category (
@@ -24,10 +25,10 @@ CREATE TABLE advert (
     title VARCHAR(255) NOT NULL,
     description VARCHAR(2500) NOT NULL,
     price INT UNSIGNED NOT NULL,
-    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
     user_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (user_id),
+    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
     category_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (category_id) REFERENCES category (category_id)
 );
@@ -35,7 +36,7 @@ CREATE TABLE advert (
 CREATE TABLE message (
     message_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     message_content VARCHAR(2500) NOT NULL,
-    send_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    send_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sender_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (sender_id) REFERENCES user (user_id),
     recipient_id INT UNSIGNED NOT NULL,
@@ -46,7 +47,7 @@ CREATE TABLE message (
 
 CREATE TABLE image (
     image_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    image_url VARCHAR(2000) NOT NULL,
+    image_url VARCHAR(255) NOT NULL, -- var char 255 au lieu de 2000 dans la correction
     advert_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (advert_id) REFERENCES advert (advert_id)
+    FOREIGN KEY (advert_id) REFERENCES advert (advert_id) ON DELETE CASCADE
 );
