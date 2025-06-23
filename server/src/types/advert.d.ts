@@ -5,8 +5,8 @@ advert_id: number;
 title: string;
 description: string;
 price: number;
-creation_date: string;
-last_date: string;
+creation_date: Date;
+last_date: Date | null;
 user_id: number;
 category_id: number;
 }
@@ -18,3 +18,7 @@ price: number;
 user_id: number;
 category_id: number;
 }
+
+// AJOUT SUITE A CORRECTION
+// représente ce que le client peut envoyer lors d'une modification partielle (PATCH) --> donc tous les champs de ItemPayload peuvent être inclus, comme il peut en manquer certains
+export type AdvertUpdatePayload = Partial<AdvertPayload>;

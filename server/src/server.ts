@@ -1,13 +1,14 @@
 import cors from "cors";
 import express, { Application,  Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
+import morgan from 'morgan'; 
 import advertRouter from './routes/advert.routes';
 import authRouter from './routes/auth.routes';
 import userRouter from './routes/user.routes';
 
 dotenv.config();
 
-const app = express();
+const app: Application = express();
 
 // Get the port from the environment variables
 const port = process.env.APP_PORT;
@@ -16,6 +17,10 @@ const port = process.env.APP_PORT;
 if (process.env.CLIENT_URL != null) {
     app.use(cors({ origin: process.env.CLIENT_URL }));
 }
+
+app.use(morgan('dev')); // Morgan est un middleware Express qui permet de logger en temps réel chacune des requêtes HTTP reçues par le serveur Express
+//Va permettre d'afficher des informations intéressantes comme : 
+// la méthode HTTP, l'URL contactée, le statut HTTP de la réponse, le temps de réponse, la taille de la réponse (en bytes)
 
 /* ************************************************************************* */
 // Request Parsing (explications dans mono repo)
@@ -26,7 +31,7 @@ app.use(express.json());
 
 // TODO
 app.use("/api/users", userRouter);
-app.use("/api/users", authRouter);
+app.use("/api/auth", authRouter);
 app.use('/api/advert', advertRouter);
 
 // middleware d'erreur par lequel on passera quand on lèvera une erreur générique :

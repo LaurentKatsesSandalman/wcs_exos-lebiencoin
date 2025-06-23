@@ -1,8 +1,8 @@
-import type { RequestHandler } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { findUserByEmail, findUserById } from "../models/user.model";
 import type { UserPayload, User } from "../types/user";
 
-export const getThisUserId: RequestHandler = async (req, res, next) => {
+export const getThisUserId = async (req:Request, res:Response, next:NextFunction) => {
         try {
             const user_id = Number.parseInt(req.params.id)
             if (isNaN(user_id)) {
@@ -20,7 +20,7 @@ export const getThisUserId: RequestHandler = async (req, res, next) => {
 }
 
 
-export const getThisUserEmail: RequestHandler = async (req, res, next) => {
+export const getThisUserEmail= async (req:Request, res:Response, next:NextFunction) => {
         try {
             const user_email = req.params.email
             if (!user_email) {
@@ -36,3 +36,7 @@ export const getThisUserEmail: RequestHandler = async (req, res, next) => {
             next(err);
         }
 }
+
+// MISSING: updateUser
+
+//MISSING: deleteUser

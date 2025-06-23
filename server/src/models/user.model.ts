@@ -45,8 +45,14 @@ export async function findUserByEmail(
 
 export async function findUserById(id: number): Promise<User | null> {
   const [rows] = await database.query<User[] & RowDataPacket[]>(
-    `SELECT * FROM user WHERE user_id=?`,
+   //Non, car il y a le password `SELECT * FROM user WHERE user_id=?`,
+   `SELECT user_id, email, user_name, user_town, phone, created_at  FROM user WHERE user_id=?`,
     [id]
   );
   return rows[0];
 }
+
+
+// MISSING (mais présent dans la correction) : updateUserById
+
+// MISSING (mais présent dans la correction) : deleteUserById

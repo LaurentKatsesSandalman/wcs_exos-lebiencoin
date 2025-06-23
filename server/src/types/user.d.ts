@@ -14,6 +14,7 @@ export type User = {
   user_name: string;
   user_town: string;
   phone?: string;
+  created_at: Date;
 };
 
 export type UserPassword = {

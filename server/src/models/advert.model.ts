@@ -9,13 +9,14 @@ export async function findAllAdverts(): Promise<Advert[]> {
     return rows;
 }
 
-export async function findAdvertById(id: number): Promise<Advert | undefined> {
+export async function findAdvertById(id: number): Promise<Advert | null> {
     const [rows] = await database.query<Advert[] & RowDataPacket[]>(
         `SELECT * FROM advert WHERE advert_id=?`,
         [id]
     );
-    return rows[0];
-}
+    const items = rows as Advert[];
+  return items.length > 0 ? items[0] : null;
+};
 
 export async function insertAdvert({
     title,
@@ -63,6 +64,13 @@ export async function updateAdvert(advert: Partial<Advert> & { advert_id: number
     ];
     const values = [
     ];
+
+//Mieux:
+//  for (const [key, value] of Object.entries(advert)) {
+//     fields.push(`${key} = ?`);
+//     values.push(value as string | number);
+//   }
+
     if (advert.title!==null){
 fields.push("title")
 values.push(advert.title)
@@ -83,7 +91,13 @@ values.push(advert.category_id)
     if (typeof advert.advert_id !== "number"){
         throw new Error("Advert_id should be num");
     }
-values.push(advert.advert_id)
+
+    //MISSING:
+     // Ajout de la date de modification
+        //fields.push(`updated_at = NOW()`);
+
+
+    values.push(advert.advert_id)
     const contentSet = fields.map((field) => `${field}=?`).join(",");
     const sqlQuery = `
         UPDATE advert 
@@ -110,13 +124,13 @@ export async function deleteAdvertById(id: number) {
         `DELETE FROM advert WHERE advert_id=?`,
         id
     );
-    if (result.affectedRows === 0) {
+    if (result.affectedRows === 0) {// step1 : fait partie d'une autre manière de faire que step 3 (qui est censée gérer tous les cas à elle toute seule)
         throw new Error("Le advert ne semble pas être trouvé");
     }
-    if (result.affectedRows > 1) {
+    if (result.affectedRows > 1) {// step2 : fait partie d'une autre manière de faire que step 3 (qui est censée gérer tous les cas à elle toute seule). PAR CONTRE, est cohérente avec step1
         throw new Error(
             "Problème majeur: plus d'une entrée vient d'être supprimée"
         );
     }
-    return result;
-}
+    return result.affectedRows > 0; // step3 renvoie un boolean : true si une ligne a été supprimée, false si pas de suppression
+};

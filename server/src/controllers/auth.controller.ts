@@ -23,7 +23,7 @@ export const userRegister: RequestHandler = async (req, res, next) => {
     // unicité de l'email
     const emailUsed = await findUserByEmail(email);
     if (emailUsed) {
-      res.status(200).json({ error: "Email déjà utilisé" });
+      res.status(409).json({ error: "Email déjà utilisé" }); // après recherche, j'avais mis res.status(200) mais il semble qu'il faille utiliser 409
       return;
     }
     //hash et remplacement du password
@@ -46,9 +46,15 @@ export const userRegister: RequestHandler = async (req, res, next) => {
 export const userLogin: RequestHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400).json({ error: 'Email et mot de passe requis.' });
+      return ;
+    }
+
     const userToCheck = await findUserByEmail(email);
     if (!userToCheck) {
-      res.status(400).json({ error: "Utilisateur introuvable" });
+      res.status(401).json({ error: 'Identifiants invalides.' });
     } else {
       const loginSuccess = await bcrypt.compare(password, userToCheck.password);
       if (loginSuccess) {
@@ -59,8 +65,12 @@ export const userLogin: RequestHandler = async (req, res, next) => {
           { expiresIn: "2h" }
         ); // durée avant expiration du token
 
+            // Exclure le mot_de_passe dans la réponse // rajouté à la correction
+        const { password, ...userWithoutPassword } = userToCheck;  // rajouté à la correction
+
+
         // Envoie le token
-        res.status(200).json({ token });
+        res.status(200).json({ token, user: userWithoutPassword }); //"user: userwithouttoken" rajouté à la correction
       } else {
         res.status(401).json({ error: "Mot de passe incorrect" });
         return ;
